@@ -1,0 +1,157 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URI")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+
+  email    String @unique
+  password String
+
+  name       String
+  surname    String
+  patronymic String
+
+  avatar String?
+  bio    String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  roles Role[] @relation("User Roles")
+
+  messages Message[]
+  rooms    Room[]    @relation("RoomMembers")
+
+  @@map("users")
+}
+
+model Role {
+  id    Int    @id @default(autoincrement())
+  name  String
+  key   String @unique
+  users User[] @relation("User Roles")
+
+  @@map("roles")
+}
+
+model LessonSubject {
+  id      Int      @id @default(autoincrement())
+  name    String
+  color   String
+  lessons Lesson[] @relation("Lesson LessonSubject")
+
+  @@map("lesson_subjects")
+}
+
+model LessonTariff {
+  id                   Int                    @id @default(autoincrement())
+  name                 String
+  description          String
+  lessons              Lesson[]               @relation("Lesson LessonTariff")
+  lessonUSPTariffPrice LessonUSPTariffPrice[]
+
+  @@map("lesson_tariffs")
+}
+
+model Lesson {
+  id Int @id @default(autoincrement())
+
+  name        String?
+  description String?
+
+  subjects LessonSubject[] @relation("Lesson LessonSubject")
+  tariffs  LessonTariff[]  @relation("Lesson LessonTariff")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  lessonPackage LessonPackage[]
+
+  @@map("lessons")
+}
+
+model LessonUSP {
+  id          Int    @id @default(autoincrement())
+  name        String
+  description String
+
+  createdAt        DateTime           @default(now()) @map("created_at")
+  updatedAt        DateTime           @default(now()) @map("updated_at")
+  lessonUSPInclude LessonUSPInclude[]
+
+  @@map("lesson_usp")
+}
+
+model LessonUSPInclude {
+  id          Int     @id @default(autoincrement())
+  has         Boolean
+  description String  @default("")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  lessonUps   LessonUSP? @relation(fields: [lessonUpsId], references: [id])
+  lessonUpsId Int?       @map("lesson_ups_id")
+
+  lessonPackage   LessonPackage? @relation(fields: [lessonPackageId], references: [id])
+  lessonPackageId Int?           @map("lesson_package_id")
+
+  @@map("lesson_usp_include")
+}
+
+model LessonUSPTariffPrice {
+  id    Int @id @default(autoincrement())
+  price Int
+
+  LessonPackage   LessonPackage? @relation(fields: [lessonPackageId], references: [id])
+  lessonPackageId Int?           @map("lesson_packege_id")
+
+  lessonTariff   LessonTariff? @relation(fields: [lessonTariffId], references: [id])
+  lessonTariffId Int?          @map("lesson_tariffId")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("lesson_ups_tariff_price")
+}
+
+model LessonPackage {
+  id          Int    @id @default(autoincrement())
+  name        String
+  description String
+
+  lessonUSPTariffPrice LessonUSPTariffPrice[]
+  lessonUSPInclude     LessonUSPInclude[]
+
+  lesson   Lesson? @relation(fields: [lessonId], references: [id])
+  lessonId Int?    @map("lesson_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("lesson_package")
+}
+
+model Room {
+  id       Int       @id @default(autoincrement())
+  name     String
+  members  User[]    @relation("RoomMembers")
+  messages Message[]
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  content   String
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  roomId    Int
+  room      Room     @relation(fields: [roomId], references: [id])
+  createdAt DateTime @default(now())
+}
