@@ -28,6 +28,8 @@ export class LessonService {
                 create: createLessonDto.lessonPackage.map((pkg) => ({
                   name: pkg.name,
                   description: pkg.description,
+                  numberOfClasses: pkg.numberOfClasses,
+                  numberOfTransfers: pkg.numberOfTransfers,
                   lessonUSPTariffPrice:
                     pkg.lessonUSPTariffPrice?.length > 0
                       ? {
@@ -75,6 +77,7 @@ export class LessonService {
         data: {
           name,
           description,
+
           lessonPackage: {
             set: updateLessonDto.lessonPackage
               .filter((pkg) => pkg.id)
@@ -86,6 +89,8 @@ export class LessonService {
               .map((pkg) => ({
                 name: pkg.name,
                 description: pkg.description,
+                numberOfClasses: pkg.numberOfClasses,
+                numberOfTransfers: pkg.numberOfTransfers,
                 lessonUSPTariffPrice: {
                   create: pkg.lessonUSPTariffPrice?.map((tariff) => ({
                     price: tariff.price,
@@ -111,6 +116,8 @@ export class LessonService {
             data: {
               name: pkg.name,
               description: pkg.description,
+              numberOfClasses: pkg.numberOfClasses,
+              numberOfTransfers: pkg.numberOfTransfers,
               lessonUSPTariffPrice: {
                 set: pkg.lessonUSPTariffPrice
                   .filter((tariff) => tariff.id)
@@ -175,6 +182,8 @@ export class LessonService {
             id: true,
             name: true,
             description: true,
+            numberOfClasses: true,
+            numberOfTransfers: true,
             lessonUSPTariffPrice: {
               orderBy: {
                 lessonTariffId: 'asc',

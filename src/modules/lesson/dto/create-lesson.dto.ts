@@ -49,6 +49,16 @@ class LessonPackageDto {
   @IsInt({ message: 'ID должен быть числом' })
   id?: number;
 
+  @IsNotEmpty({ message: 'Необходимо указать кол-во занятий в пакете' })
+  @IsInt({ message: 'Необходимо указать кол-во занятий в пакете' })
+  numberOfClasses: number;
+
+  @IsNotEmpty({
+    message: 'Необходимо указать кол-во переносов занятий в пакете',
+  })
+  @IsInt({ message: 'Необходимо указать кол-во переносов занятий в пакете' })
+  numberOfTransfers: number;
+
   @IsNotEmpty({ message: 'Название пакета не может быть пустым' })
   @IsString({ message: 'Название пакета должно быть строкой' })
   name: string;
@@ -76,6 +86,5 @@ export class CreateLessonDto {
   description: string;
 
   @IsArray()
-  @IsOptional()
-  lessonPackage?: LessonPackageDto[];
+  lessonPackage: LessonPackageDto[];
 }

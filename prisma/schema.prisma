@@ -123,9 +123,11 @@ model LessonUSPTariffPrice {
 }
 
 model LessonPackage {
-  id          Int    @id @default(autoincrement())
-  name        String
-  description String
+  id                Int    @id @default(autoincrement())
+  name              String
+  description       String
+  numberOfClasses   Int
+  numberOfTransfers Int
 
   lessonUSPTariffPrice LessonUSPTariffPrice[]
   lessonUSPInclude     LessonUSPInclude[]
