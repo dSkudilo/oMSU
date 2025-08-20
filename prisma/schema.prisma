@@ -141,9 +141,12 @@ model LessonPackage {
 
 model Room {
   id       Int       @id @default(autoincrement())
-  name     String
+  name     String?
   members  User[]    @relation("RoomMembers")
   messages Message[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
 }
 
 model Message {
@@ -153,5 +156,6 @@ model Message {
   user      User     @relation(fields: [userId], references: [id])
   roomId    Int
   room      Room     @relation(fields: [roomId], references: [id])
-  createdAt DateTime @default(now())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
 }

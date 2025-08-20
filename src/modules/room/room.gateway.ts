@@ -59,8 +59,6 @@ export class RoomsGateway {
     @MessageBody() payload: { userId: number; roomId: number; content: string },
   ) {
     // Создаем сообщение в БД
-    this.server.to(`room_${payload.roomId}`).emit('newMessage', 'message');
-
     const message = await this.prisma.message.create({
       data: {
         content: payload.content,
@@ -72,6 +70,7 @@ export class RoomsGateway {
         room: true,
       },
     });
+    this.server.to(`room_${payload.roomId}`).emit('newMessage', 'message');
 
     // Отправляем сообщение только в эту комнату
     this.server.to(`room_${payload.roomId}`).emit('newMessage', message);
